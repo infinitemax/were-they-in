@@ -12,10 +12,13 @@ export const moviesApi = {
             url: `${url}/search/${searchTerm}`,
         })
 
-        if (response) {
-            console.log(response.data)
+        if (response.data.length > 0) {
+            return response.data
         }
+
+        return []
     },
+
     async doSomethingElse() {
 
     }

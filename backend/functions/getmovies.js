@@ -30,7 +30,8 @@ export const getActors = async (token) => {
 
 export const getMovieFromSearchTerm = async (token, searchTerm) => {
 
-    console.log(searchTerm)
+    const moviesToSend = []
+
     try {
         const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${searchTerm}`, {
             headers: {
@@ -38,15 +39,34 @@ export const getMovieFromSearchTerm = async (token, searchTerm) => {
             }
         })
 
-        if (response) {
+        if (response.data.results.length > 0) {
             console.log(response.data)
+
+            response.data.results.forEach((movieObject) => {
+
+                const movie = {
+                    id: movieObject.id,
+                    title: movieObject.title,
+                    posterPath: movieObject.poster_path,
+                    releaseDate: movieObject.release_date,
+                    rating: movieObject.vote_average
+                }
+
+                moviesToSend.push(movie)
+
+            })
+
+            return moviesToSend
+        } else {
+            return []
         }
 
     } catch (error) {
         console.log(error)
+        return "it hasn't worked!"
     }
 
-    return "it hasn't worked!"
+
 
 }
 
