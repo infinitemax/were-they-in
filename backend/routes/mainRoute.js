@@ -29,10 +29,9 @@ mainRouter.get("/hello", (req, res) => {
 mainRouter.get("/search/:searchTerm", async (req, res) => {
 
     const searchTerm = req.params.searchTerm
-    console.log(`searching for: ${searchTerm}`)
+    // console.log(`searching for: ${searchTerm}`)
 
-
-    const result = await getMovieFromSearchTerm(token, searchTerm)
+    const result = await getMovieFromSearchTerm(token, searchTerm, 1)
 
     res.send(result)
 })
