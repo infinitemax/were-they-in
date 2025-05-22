@@ -72,7 +72,7 @@ export const getMovieFromSearchTerm = async (token, searchTerm, page) => {
         for (let i = 2; i <= totalPages; i++) {
 
             const nextResponse = await makeApiCall(token, searchTerm, i)
-            console.log(`page ${i} contains ${nextResponse.data.results.length} pages`)
+            console.log(`page ${i} contains ${nextResponse.data.results.length} movies`)
             accumulatedResults.push(nextResponse.data.results)
         }
     }
@@ -113,3 +113,6 @@ export const getMovieFromSearchTerm = async (token, searchTerm, page) => {
 export const testApi = async () => {
     return "hello from the test api"
 }
+
+
+// next - sort data by rating or something before sending back

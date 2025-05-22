@@ -1,6 +1,7 @@
 import type { Route } from "./+types/home";
 import { moviesApi } from "api/movieApi";
 import MovieSearchCard from "components/MovieSearchCard";
+import MovieSelectedCard from "components/MovieSelectedCard";
 import { useEffect, useState } from "react";
 import type { searchResultType } from "typesInterfaces/movieTypes";
 
@@ -29,6 +30,7 @@ export default function Home() {
   }
 
   const submitMovie = async (searchTerm: string, whichSearch: number) => {
+    setMovie1HasBeenChosen(0)
     const response: searchResultType[] = await moviesApi.getMovies(searchTerm)
 
     if (response) {
@@ -39,28 +41,50 @@ export default function Home() {
         setMovie2Results(response)
       }
     }
+  }
+
+  // select movie - use id to get credits
+
+  const [selectedMovie1, setSelectedMovie1] = useState<searchResultType>()
+  const [selectedMovie2, setSelectedMovie2] = useState<searchResultType>()
+  const [movie1Cast, seMovie1Cast] = useState<any>()
+  const [movie1HasBeenChosen, setMovie1HasBeenChosen] = useState<number>(0)
+  const [movie2HasBeenChosen, setMovie2HasBeenChosen] = useState<number>(0)
+
+  const selectMovie = async (selected: searchResultType, whichSearch: number) => {
+
+    console.log("clicked from select movie function")
+
+    console.log(selected)
+    if (!whichSearch) {
+      setSelectedMovie1(selected)
+      setMovie1HasBeenChosen(1)
+      if (movie1HasBeenChosen) {
+        setMovie1Results([])
+      }
+    }
 
   }
 
+  // clear the search array when movie is selected
   useEffect(() => {
-    console.log(movie1Results)
-  }, [movie1Results])
+    if (movie1HasBeenChosen) {
+      setMovie1Results([])
+    }
+  }, [movie1HasBeenChosen, movie2HasBeenChosen])
+
+  useEffect(() => {
+    if (movie2HasBeenChosen) {
+      setMovie2Results([])
+    }
+  }, [movie2HasBeenChosen])
 
 
-
-  // const testMovie = {
-
-  //   id: 466577,
-  //   title: "Behind the Scenes of 'Y Tu Mamá También'",
-  //   posterPath: "/1AXE5hVfoxL9S7gyVLuxklDtFLY.jpg",
-  //   releaseDate: "2001-06-08"
-
-  // }
 
 
   return (
     <>
-      <h1 className="text-3xl">Where they in...?</h1>
+      <h1 className="text-3xl">Were they in...?</h1>
 
       <div className="flex justify-center">
         <div className="flex gap-4">
@@ -73,10 +97,12 @@ export default function Home() {
               </button>
             </div>
             <div>
+              {/* Here I am! trying to get the selected  movie to appear, there's a problem with the type */}
+              {movie1HasBeenChosen && selectedMovie1 != undefined ? <MovieSelectedCard selected={selectedMovie1} /> : null}
               {movie1Results.length > 0 ?
                 movie1Results.map((movie: searchResultType) => {
                   return (
-                    <MovieSearchCard key={movie.id} result={movie} />
+                    <MovieSearchCard key={movie.id} result={movie} selectMovie={() => selectMovie(movie, 0)} />
                   )
                 })
                 : null}
@@ -95,7 +121,7 @@ export default function Home() {
               {movie2Results.length > 0 ?
                 movie2Results.map((movie: searchResultType) => {
                   return (
-                    <MovieSearchCard key={movie.id} result={movie} />
+                    <MovieSearchCard key={movie.id} result={movie} selectMovie={() => selectMovie(movie, 1)} />
                   )
                 })
                 : null}

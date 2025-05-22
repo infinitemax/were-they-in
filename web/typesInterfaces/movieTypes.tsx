@@ -7,5 +7,6 @@ export type searchResultType = {
 }
 
 export interface searchResultProps {
-    result: searchResultType
+    result: searchResultType,
+    selectMovie: () => void
 }
